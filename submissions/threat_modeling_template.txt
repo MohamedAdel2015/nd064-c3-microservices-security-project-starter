@@ -41,9 +41,9 @@ From the failed findings, select and document 3 findings from the Docker-bench r
    - Harden by configuring Docker Desktop to use the 'info' logging level. 
    - This Sets up an appropriate log level, configures the Docker daemon to log events that you would want to review later. A base log level of info and above would capture all logs except debug logs.
 
-2. [FAIL] 5.14 Ensure that the 'on-failure' container restart policy is set to '5' (Denial of Service, Tampering)
-   - Harden by running containers with the restart policy set to 'on-failure:5'.
-   - Example: Use `docker run --restart=on-failure:5 ...` to limit automatic restarts and reduce the risk of denial of service or runaway container restarts.
+2. [FAIL] 2.1 Ensure that the container host has been Hardened (Tampering, Elevation of Privilege)
+   - Harden by applying operating system hardening best practices on the Docker host. 
+   - This includes disabling unused services, applying security patches, configuring firewalls, and minimizing installed packages to reduce the attack surface and prevent privilege escalation.
    
 3. [FAIL] 4.5 Ensure Content trust for Docker is Enabled (Information Disclosure, Tampering)
    - Harden by setting: `export DOCKER_CONTENT_TRUST=1`
