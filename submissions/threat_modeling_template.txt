@@ -37,14 +37,14 @@ Given Kubernetes' system components and the STRIDE framework, identify five pote
 Docker-bench Run Results and Analysis
 From the failed findings, select and document 3 findings from the Docker-bench results that you want to harden based on the 5 attack surface areas you identified in Step 1. At least 1 of the 3 hardened findings should be different from the ones mentioned in the exercise (i.e. 5.10, 5.14, and 5.22).
 
-1. [FAIL] 3.19 Ensure that /etc/default/docker file ownership is set to root:root (Tampering, Elevation of Privilege)
-   - Harden by running: `chown root:root /etc/default/docker`
-   - Ensures only root can modify Docker's configuration, preventing privilege escalation.
+1. [FAIL] 2.2.b Ensure the logging level is set to 'info' (Tampering, Repudiation)
+   - Harden by configuring Docker Desktop to use the 'info' logging level. 
+   - This Sets up an appropriate log level, configures the Docker daemon to log events that you would want to review later. A base log level of info and above would capture all logs except debug logs.
 
-2. [FAIL] 4.1 Ensure a user for the container has been created (Elevation of Privilege)
-   - Harden by specifying a non-root user in Dockerfiles using the `USER` directive.
-   - This limits the impact of a container compromise by preventing processes from running as root inside containers.
-
+2. [FAIL] 5.14 Ensure that the 'on-failure' container restart policy is set to '5' (Denial of Service, Tampering)
+   - Harden by running containers with the restart policy set to 'on-failure:5'.
+   - Example: Use `docker run --restart=on-failure:5 ...` to limit automatic restarts and reduce the risk of denial of service or runaway container restarts.
+   
 3. [FAIL] 4.5 Ensure Content trust for Docker is Enabled (Information Disclosure, Tampering)
    - Harden by setting: `export DOCKER_CONTENT_TRUST=1`
    - This ensures only signed and verified images are used, reducing the risk of tampered or malicious images.
