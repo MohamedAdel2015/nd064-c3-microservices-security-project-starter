@@ -1,0 +1,50 @@
+Docker Threat Modeling
+Given Docker's system components and the STRIDE framework, identify five potential threats that may arise.
+
+1. Docker Daemon API Exposure (Spoofing, Tampering, Elevation of Privilege)
+   - The Docker daemon listens on a Unix socket or TCP port. If exposed or not properly secured, attackers can spoof legitimate clients, tamper with container configurations, or gain elevated privileges by issuing privileged Docker commands.
+
+2. Insecure Image Registries (Information Disclosure, Tampering)
+   - Pulling images from public or insecure registries can lead to tampered or malicious images being deployed. Sensitive data may be leaked if images are not scanned or verified.
+
+3. Container Breakout via Privileged Mode (Elevation of Privilege, Tampering)
+   - Running containers with the `--privileged` flag or excessive capabilities can allow attackers to escape the container isolation and tamper with the host or escalate privileges.
+
+4. Insecure Dockerfile or Build Process (Tampering, Information Disclosure)
+   - Dockerfiles with secrets, weak permissions, or insecure instructions (e.g., ADD from untrusted sources) can leak sensitive information or allow tampering during the build process.
+
+5. Unrestricted Network Traffic Between Containers (Spoofing, Information Disclosure)
+   - By default, containers can communicate freely on the bridge network. Attackers can spoof traffic between containers or eavesdrop on sensitive data.
+
+Kubernetes Threat Modeling
+Given Kubernetes' system components and the STRIDE framework, identify five potential threats that may arise.
+
+1. Kubernetes API Server Exposure (Denial of Service, Spoofing)
+   - The API server is the control plane's entry point. If not properly secured, attackers can overwhelm it (DoS) or attempt to spoof requests to manipulate cluster state.
+
+2. etcd Data Store Compromise (Tampering, Information Disclosure)
+   - etcd stores all cluster state and secrets. If not encrypted or access-controlled, attackers can tamper with cluster configuration or extract sensitive information.
+
+3. Insecure Kubelet API (Elevation of Privilege, Information Disclosure)
+   - The Kubelet runs on every worker node and exposes an API. If not secured, attackers can execute commands on nodes or access pod data.
+
+4. Node Network Policy Misconfiguration (Information Disclosure, Spoofing)
+   - Weak or missing network policies allow pods to communicate freely, enabling attackers to spoof traffic or access sensitive services.
+
+5. Lack of Audit Logging and Certificate Management (Repudiation)
+   - Without proper audit logging or certificate revocation, malicious actions may go untracked and users may deny their actions (repudiation).
+
+Docker-bench Run Results and Analysis
+From the failed findings, select and document 3 findings from the Docker-bench results that you want to harden based on the 5 attack surface areas you identified in Step 1. At least 1 of the 3 hardened findings should be different from the ones mentioned in the exercise (i.e. 5.10, 5.14, and 5.22).
+
+1. [FAIL] 3.19 Ensure that /etc/default/docker file ownership is set to root:root (Tampering, Elevation of Privilege)
+   - Harden by running: `chown root:root /etc/default/docker`
+   - Ensures only root can modify Docker's configuration, preventing privilege escalation.
+
+2. [FAIL] 4.1 Ensure a user for the container has been created (Elevation of Privilege)
+   - Harden by specifying a non-root user in Dockerfiles using the `USER` directive.
+   - This limits the impact of a container compromise by preventing processes from running as root inside containers.
+
+3. [FAIL] 4.5 Ensure Content trust for Docker is Enabled (Information Disclosure, Tampering)
+   - Harden by setting: `export DOCKER_CONTENT_TRUST=1`
+   - This ensures only signed and verified images are used, reducing the risk of tampered or malicious images.
