@@ -1,0 +1,22 @@
+1. Incident commander name:  
+Mohamed Adel Abdelfattah
+
+2. Executive Summary of what happened:  
+Three unauthorized pods associated with cryptocurrency mining were detected running within the cluster environment.
+
+3. Summary of what was affected:  
+The breach allowed the attacker to deploy and operate containers for crypto-mining purposes. Specifically, containers related to Monero mining (minergate, moneropool, and xmrpooldotnet) were executed, utilizing cluster resources for illicit mining activities.
+
+4. Summary of the impact:  
+The presence of crypto-mining workloads led to a substantial increase in CPU consumption across the cluster. 
+Monitoring tools, such as the Kubernetes Compute Resources dashboard, indicated a noticeable spike in CPU usage correlating with the deployment of these unauthorized pods.
+
+5. Summary of the remediation steps:  
+To address the incident, the following command was used to forcibly remove the malicious pods:  
+kubectl --kubeconfig kube_config_cluster.yml delete pod <pod_name> --grace-period=0 --force  
+After removal, resource utilization was monitored via Grafana and Falco dashboards to confirm that CPU usage returned to normal and no further mining activity was detected.
+
+6. Summary of lessons learned:  
+We should review access to the Kubernetes API server from administrative terminals and the Grafana dashboards. 
+Admission controllers can also be configured to disallow unknown images to be used to create containers. 
+Additionally, we can update the priority of Falco rules for the metrics endpoint to the highest level.
